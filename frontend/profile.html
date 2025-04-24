@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile - AI Chat Assistant</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>AI Chat Assistant</h2>
+        <button id="sidebar-toggle-btn" class="sidebar-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      
+      <div class="sidebar-content">
+        <div class="user-profile">
+          <div class="avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <h3 id="sidebar-username">Username</h3>
+          <p id="sidebar-email">user@example.com</p>
+        </div>
+
+        <nav class="sidebar-nav">
+          <ul>
+            <li>
+              <a href="chat.html">
+                <i class="fas fa-comment-dots"></i>
+                <span>Chat</span>
+              </a>
+            </li>
+            <li class="active">
+              <a href="profile.html">
+                <i class="fas fa-user-circle"></i>
+                <span>Profile</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" id="sidebar-logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <header class="main-header">
+        <button id="mobile-sidebar-toggle" class="sidebar-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Profile</h1>
+      </header>
+
+      <main>
+        <div class="profile-container">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="profile-info">
+              <h2 id="profile-username">Username</h2>
+              <p id="profile-email">user@example.com</p>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <h3>Account Information</h3>
+            <form id="profile-form">
+              <div class="form-group">
+                <label for="profile-username-input">Username</label>
+                <input type="text" id="profile-username-input" />
+              </div>
+              <div class="form-group">
+                <label for="profile-email-input">Email</label>
+                <input type="email" id="profile-email-input" disabled />
+              </div>
+              <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
+          </div>
+
+          <div class="profile-section">
+            <h3>Chat History</h3>
+            <div class="chat-history" id="chat-history">
+              <p class="empty-state">No chat history available.</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/project.js"></script>
+</body>
+</html>
