@@ -1,0 +1,143 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - AI Chat Assistant</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>AI Chat Assistant</h2>
+                <button id="sidebar-toggle-btn" class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="user-profile">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 id="sidebar-username">Username</h3>
+                    <p id="sidebar-email">user@example.com</p>
+                    <div class="credits-display" id="sidebar-credits">
+                        Credits: 0
+                    </div>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li class="active">
+                            <a href="chat.html">
+                                <i class="fas fa-comment-dots"></i>
+                                <span>Chat</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" id="buy-credits-btn">
+                                <i class="fas fa-coins"></i>
+                                <span>Buy Credits</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" id="sidebar-logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="main-header">
+                <button id="mobile-sidebar-toggle" class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>Chat</h1>
+                <div class="header-actions">
+                    <span id="credits-display" class="credits-badge">Credits: 0</span>
+                    <div class="dropdown">
+                        <button id="notifications-btn" class="icon-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge hidden" id="notification-badge">0</span>
+                        </button>
+                        <div class="dropdown-content" id="notifications-container">
+                            <h3>Notifications</h3>
+                            <div id="notifications-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main>
+                <!-- Chat Interface -->
+                <div id="chat-container">
+                    <div id="chat-messages"></div>
+                    <div id="chat-input-container">
+                        <textarea id="chat-input" placeholder="Type your message here..." style="height: auto;;"></textarea>
+                        <button id="send-btn" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Payment Modal -->
+        <div id="payment-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>Buy Credits</h2>
+                <div class="credit-packages">
+                    <div class="credit-package" data-package-id="basic" data-amount="100" data-price="500">
+                        <h3>Basic Package</h3>
+                        <p>100 Credits</p>
+                        <p class="price">$5.00</p>
+                        <button class="select-package-btn btn">Select</button>
+                    </div>
+                    <div class="credit-packages">
+                        <div class="credit-package" data-package-id="standard" data-amount="300" data-price="1200">
+                            <h3>Standard Package</h3>
+                            <p>300 Credits</p>
+                            <p class="price">$12.00</p>
+                            <button class="select-package-btn btn">Select</button>
+                        </div>
+                        <div class="credit-packages">
+                            <div class="credit-package" data-package-id="premium" data-amount="1000" data-price="3000">
+                                <h3>Premium Package</h3>
+                                <p>1000 Credits</p>
+                                <p class="price">$30.00</p>
+                                <button class="select-package-btn btn">Select</button>
+                            </div>
+                </div>
+                <div id="payment-form-container" class="hidden">
+                    <form id="payment-form">
+                        <div id="card-element"></div>
+                        <div id="card-errors" role="alert"></div>
+                        <button type="submit" id="submit-payment" class="btn btn-primary">Pay Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/chat.js"></script>
+</body>
+</html>
