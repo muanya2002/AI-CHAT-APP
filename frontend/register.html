@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - AI Chat Assistant</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-page-container">
+        <div class="auth-form-container">
+            <div class="auth-header">
+                <h1>AI Chat Assistant</h1>
+                <h2>Create an Account</h2>
+            </div>
+
+
+            <div id="error-message" class="error-message hidden"></div>
+
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary ">Register</button>
+            </form>
+
+            <div class="social-auth">
+                <button id="google-register" class="btn btn-social">
+                <a href="http://localhost:8080/api/auth/google/login" class="btn btn-google">
+                    <i class="fab fa-google"></i> Register with Google
+                </a>
+                </button>
+            </div>
+
+            <div class="auth-links">
+                <p>Already have an account? <a href="login.html" id="login-link">Login</a></p>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+
