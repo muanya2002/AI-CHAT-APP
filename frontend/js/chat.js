@@ -140,8 +140,8 @@ function init() {
 
   try {
     // Initialize Stripe - replace with your actual Stripe public key
-    if (typeof Stripe !== 'undefined') {
-      stripe = Stripe("pk_live_your_actual_stripe_public_key");
+    if (typeof stripe !== 'undefined') {
+      stripe = stripe("pk_live_your_actual_stripe_public_key");
     } else {
       console.warn("Stripe library not loaded");
     }
@@ -257,7 +257,7 @@ function toggleMobileSidebar() {
 // Check for Stripe return when page load
 window.addEventListener("DOMContentLoaded", function () {
   init();
-  fetchNotifications();
+  //fetchNotifications();
   if (window.location.search.includes("package_id")) {
     handleStripeReturn();
   }
@@ -270,25 +270,14 @@ async function sendMessage() {
 
   if (userCredits <= 0) {
     showNotification("You don't have enough credits. Please purchase more.", "error");
-    addNotification({
-      message: "You’ve run out of credits. Please top up to continue chatting.",
-      read: false,
-      createdAt: new Date().toISOString(),
-      user_id: currentUser.id,  // this will be overwritten in the backend with token data
-    });
     return;
   }
-
-  userCredits--;
-  updateCreditsDisplay();
-  addMessageToChat("user", message);
-  chatInput.value = "";
-  chatInput.style.height = "auto";
 
   const thinkingId = "thinking-" + Date.now();
   addStatusMessage("AI is thinking...", thinkingId);
 
   try {
+    console.log("Sending message to AI:", message);
     const response = await fetch(`${API_BASE_URL}/api/chat/`, {
       method: "POST",
       headers: {
@@ -300,6 +289,14 @@ async function sendMessage() {
 
     const thinkingElement = document.getElementById(thinkingId);
     if (thinkingElement) thinkingElement.remove();
+
+    if (!response.ok) {
+      // Handle error responses with status codes
+      const errorData = await response.text();
+      console.error("Server error:", response.status, errorData);
+      throw new Error(`Server error: ${response.status} - ${errorData}`);
+    }
+    
 
     if (response.headers.get("Content-Type")?.includes("text/event-stream")) {
       const reader = response.body.getReader();
@@ -316,22 +313,35 @@ async function sendMessage() {
         messageElement.textContent = aiMessage;
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
+      // After stream is complete
+  addMessageToChat("ai", aiMessage);
+  userCredits--;
+  updateCreditsDisplay();
+    
     } else {
       const data = await response.json();
-      addMessageToChat("ai", data.response);
       console.log("AI response received:", data);
 
+    }
+
+    if (data.response) {
+      addMessageToChat("ai", data.response);
+      // Credits were successfully deducted on the server
+      userCredits--; // Only update client-side credits on success
+      updateCreditsDisplay();
+    } else {
+      throw new Error("Response missing expected data");
     }
 
     fetchUserData(); // update credits
   } catch (error) {
     console.error("Chat error:", error);
+
     const thinkingElement = document.getElementById(thinkingId);
     if (thinkingElement) thinkingElement.remove();
+
     addStatusMessage("Failed to get AI response. Please try again.", "error-" + Date.now());
-    userCredits++;
-    updateCreditsDisplay();
-  }
+}
 }
 
 function addMessageToChat(role, content) {
