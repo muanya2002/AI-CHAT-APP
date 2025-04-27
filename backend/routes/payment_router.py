@@ -15,7 +15,7 @@ router = APIRouter()
 # Initialize Stripe
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://127.0.0.1:8000")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://127.0.0.1:8080")
 
 # Define available credit packages
 CREDIT_PACKAGES = {
