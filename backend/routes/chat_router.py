@@ -32,29 +32,49 @@ async def send_message(message: ChatMessage, background_tasks: BackgroundTasks, 
     """Send message to AI."""
     db = get_database()
     
-    # Check if user has enough credits
-    if current_user.credits <= 0:
-        raise HTTPException(
-            status_code=status.HTTP_402_PAYMENT_REQUIRED,
-            detail="Insufficient credits",
-        )
-    
-    # Deduct a credit
+    # Generate AI response using Celery task
+    task = generate_ai_response.delay(message.message, current_user.id)
+    print(f"Task ID: {task.id}")
+        
+        # Deduct a credit - moved here to ensure task is created first
     await db.users.update_one(
-        {"_id": current_user.id},
-        {"$inc": {"credits": -1}}
-    )
-    
+            {"_id": current_user.id},
+            {"$inc": {"credits": -1}}
+        )
+        
+        # Get the response with better error handling
     try:
-        # Generate AI response using Celery task
-        task = generate_ai_response.delay(message.message, current_user.id)
-        print("Task ID:", task.id)
-        ai_response = task.get(timeout=0)
-
+            result = task.get(timeout=15)  # Increased timeout
+            
+            # Check if response indicates an error
+            if isinstance(result, dict):
+                ai_response = result.get("result", "Error generating response")
+            elif isinstance(result, str):
+                ai_response = result
+            else:
+                raise Exception(result["error"])
+            
+            if isinstance(ai_response, str) and ai_response.startswith("Error"):
+                raise Exception(ai_response[6:])
+                
+    except Exception as task_error:
+            # Log the specific task error
+            print(f"Task error: {task_error}")
+            
+            # Refund the credit
+            await db.users.update_one(
+                {"_id": current_user.id},
+                {"$inc": {"credits": 1}}
+            )
+            
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"AI service error: {str(task_error)}",
+            )
 
         # Save chat to database
-        chat_id = str(uuid.uuid4())
-        chat = {
+    chat_id = str(uuid.uuid4())
+    chat = {
             "_id": chat_id,
             "user_id": current_user.id,
             "message": message.message,
@@ -62,33 +82,18 @@ async def send_message(message: ChatMessage, background_tasks: BackgroundTasks, 
             "created_at": datetime.utcnow(),
         }
         
-        await db.chats.insert_one(chat)
+    await db.chats.insert_one(chat)
         
         # Get updated user credits
-        user = await db.users.find_one({"_id": current_user.id})
+    user = await db.users.find_one({"_id": current_user.id})
         
-        return {
+    return {
             "id": chat_id,
             "user_id": current_user.id,
             "message": message.message,
             "response": ai_response,
             "created_at": chat["created_at"],
         }
-    
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        
-        # Refund the credit if AI response fails
-        await db.users.update_one(
-            {"_id": current_user.id},
-            {"$inc": {"credits": 1}}
-        )
-        
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate AI response: {str(e)}",
-        )
 
 @router.get("/", response_model=List[ChatResponse])
 async def get_chat_history(current_user: UserInDB = Depends(get_current_user)):
