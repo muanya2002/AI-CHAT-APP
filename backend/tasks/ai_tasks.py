@@ -17,12 +17,14 @@ response = model.generate_content
 
 @celery_app.task
 def generate_ai_response(message, user_id):
-    print(f"[TASK START] Received message: {message} from user: {user_id}")
+    logger.info(f"[TASK START] Received message: {message} from user: {user_id}")
     try:
+        model = genai.GenerativeModel("models/gemini-1.5-pro-002")
         response = model.generate_content(message)
-        print(f"[TASK COMPLETE] Gemini response: {response.text}")
-        return response.text
+        logger.info(f"[TASK COMPLETE] Generated {len(response.text)} chars response")
+        return {"text": response.text}  # <<< RETURN A DICT INSTEAD OF STRING
     except Exception as e:
-        print(f"[TASK ERROR] {e}")
-        return "Error generating response."
+        logger.error(f"[TASK ERROR] {e}")
+        return {"error": "Error generating response"}
+
 
