@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <title>AI Chat App Diagrams</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h2 {
+      margin-top: 40px;
+      color: #2c3e50;
+    }
+    .mermaid {
+      margin-top: 20px;
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+    <a href="index.html" style="
+  display: inline-block;
+  margin: 20px 0;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+">
+  ← Back to Home
+</a>
+
+  <h1>AI Chat App - Architecture Diagrams</h1>
+
+  <h2>Sequence Diagram - Login & Message Flow</h2>
+  <div class="mermaid">
+    sequenceDiagram
+    participant Client
+    participant API
+    participant Auth
+    participant Credit
+    participant AI
+    participant Celery
+
+    Client->>API: Login Request
+    API->>Auth: Validate Credentials
+    Auth-->>API: JWT Token
+    API-->>Client: Auth Response
+
+    Client->>API: Send Message
+    API->>Credit: Check/Deduct Credits
+    Credit-->>API: Credits Valid
+    API->>Celery: Create AI Task
+    Celery->>AI: Generate Response
+    AI-->>Celery: Response
+    Celery-->>API: Task Complete
+    API-->>Client: Response via WebSocket
+  </div>
+
+  <h2>Behavior Diagram - Message Processing</h2>
+  <div class="mermaid">
+    stateDiagram-v2
+    [*] --> MessageReceived
+    MessageReceived --> CreditCheck
+    CreditCheck --> CreditInsufficient: No Credits
+    CreditCheck --> MessageStored: Credits Available
+    MessageStored --> CreditDeducted
+    CreditDeducted --> TaskCreated
+    TaskCreated --> AIProcessing
+    AIProcessing --> ProcessingFailed: Failure
+    ProcessingFailed --> Retry
+    Retry --> AIProcessing
+    AIProcessing --> ResponseStored: Success
+    ResponseStored --> ResponseSent
+    ResponseSent --> [*]
+  </div>
+
+</body>
+</html>
