@@ -8,3 +8,7 @@ __pycache__/
 
 # Ignore logs
 *.log
+
+# Ignore coverage reports
+.next/
+cypress/
