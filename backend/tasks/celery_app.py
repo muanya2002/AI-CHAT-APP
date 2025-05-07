@@ -37,3 +37,4 @@ celery_app.conf.beat_schedule = {
         'schedule': 86400.0,  # every 24 hours
 },
 }
+from tasks import ai_tasks
