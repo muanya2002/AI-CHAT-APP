@@ -13,18 +13,6 @@ from database.mongodb import get_database
 
 router = APIRouter()
 
-##//test to check if my ai is working
-##import google.generativeai as genai
-##import os
-##from dotenv import load_dotenv
-##load_dotenv()
-##GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-##genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-##print("GEMINI_API_KEY:", os.getenv("GEMINI_API_KEY"))  # just to confirm it's being read
-
-##model = genai.GenerativeModel("models/gemini-1.5-pro-002")
-##response = model.generate_content("What is the capital of Nigeria?")
-##print(response.text)
 
 
 @router.post("/", response_model=ChatResponse)
